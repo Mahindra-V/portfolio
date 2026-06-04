@@ -183,13 +183,135 @@ if (form) {
   });
 }
 
-// === TILT EFFECT ON CARDS ===
+// === 3D TILT EFFECT ON CARDS ===
 document.querySelectorAll('.project-card-v2, .skill-card').forEach(card => {
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
-    card.style.transform = `translateY(-6px) perspective(1000px) rotateX(${-y * 4}deg) rotateY(${x * 4}deg)`;
+    card.style.transform = `translateY(-8px) perspective(1000px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg)`;
+    // Dynamic glow effect following cursor
+    const glowX = ((e.clientX - rect.left) / rect.width) * 100;
+    const glowY = ((e.clientY - rect.top) / rect.height) * 100;
+    card.style.background = `radial-gradient(circle at ${glowX}% ${glowY}%, rgba(124,108,240,0.06) 0%, rgba(255,255,255,0.025) 50%)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.background = '';
+  });
+});
+
+// === 3D AVATAR TILT ON MOUSE MOVE ===
+const heroTilt = document.getElementById('hero-tilt');
+const hero3dScene = document.querySelector('.hero-3d-scene');
+if (hero3dScene) {
+  hero3dScene.addEventListener('mousemove', (e) => {
+    const rect = hero3dScene.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    if (heroTilt) {
+      heroTilt.style.transform = `perspective(800px) rotateX(${-y * 12}deg) rotateY(${x * 12}deg) scale(1.02)`;
+    }
+  });
+  hero3dScene.addEventListener('mouseleave', () => {
+    if (heroTilt) {
+      heroTilt.style.transform = '';
+    }
+  });
+}
+
+// === PARALLAX SCROLL EFFECT ===
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  // Hero parallax layers
+  const heroOrbs = document.querySelectorAll('.hero-orb');
+  heroOrbs.forEach((orb, i) => {
+    const speed = 0.1 + i * 0.05;
+    orb.style.transform = `translate(0, ${scrolled * speed}px)`;
+  });
+  // Sections subtle parallax
+  document.querySelectorAll('.section-header').forEach(header => {
+    const rect = header.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+      header.style.transform = `translateY(${(progress - 0.5) * -15}px)`;
+    }
+  });
+});
+
+// === MAGNETIC HOVER ON BUTTONS ===
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = '';
+  });
+});
+
+// === 3D CERT CARD TILT ===
+document.querySelectorAll('.cert-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `translateY(-4px) perspective(600px) rotateX(${-y * 5}deg) rotateY(${x * 5}deg)`;
   });
   card.addEventListener('mouseleave', () => { card.style.transform = ''; });
 });
+
+// === SMOOTH REVEAL WITH STAGGER ===
+const staggerObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const children = entry.target.querySelectorAll('.project-card-v2, .skill-card, .cert-card');
+      children.forEach((child, i) => {
+        setTimeout(() => {
+          child.style.opacity = '1';
+          child.style.transform = 'translateY(0)';
+        }, i * 120);
+      });
+      staggerObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.projects-showcase, .skills-masonry, .certs-grid').forEach(el => staggerObserver.observe(el));
+
+// === AUTO SCROLL SECTIONS ===
+const autoScrollSections = ['#home', '#about', '#skills', '#projects'];
+let currentScrollIndex = 0;
+let autoScrollTimer = setInterval(scrollToNextSection, 5000);
+
+function scrollToNextSection() {
+  currentScrollIndex = (currentScrollIndex + 1) % autoScrollSections.length;
+  const target = document.querySelector(autoScrollSections[currentScrollIndex]);
+  if (target) {
+    // Add offset for the sticky navbar if needed
+    const headerOffset = 80;
+    const elementPosition = target.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.scrollY - headerOffset;
+    
+    window.scrollTo({
+         top: offsetPosition,
+         behavior: "smooth"
+    });
+  }
+}
+
+// Pause auto-scroll on user interaction so we don't annoy the user if they want to stop and read
+function stopAutoScroll() {
+  if (autoScrollTimer) {
+    clearInterval(autoScrollTimer);
+    autoScrollTimer = null;
+  }
+}
+
+// Listen to various interactions to stop the auto scroll
+window.addEventListener('wheel', stopAutoScroll, { passive: true });
+window.addEventListener('touchmove', stopAutoScroll, { passive: true });
+window.addEventListener('keydown', stopAutoScroll, { passive: true });
+window.addEventListener('mousedown', stopAutoScroll, { passive: true });
+

@@ -57,15 +57,101 @@ section{padding:100px 24px;position:relative;z-index:1}
 .hero-stats{display:flex;gap:32px;margin-top:48px;animation:fadeInUp .8s ease .4s both}
 .stat-item .stat-number{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .stat-item .stat-label{font-size:.78rem;color:var(--text2)}
-.hero-right{display:flex;justify-content:center;animation:fadeInUp .8s ease .3s both}
-.hero-avatar-wrapper{position:relative;width:320px;height:320px}
-.hero-avatar-img{width:100%;height:100%;object-fit:cover;border-radius:50%;position:relative;z-index:2;border:3px solid var(--glass-border)}
+.hero-right{display:flex;justify-content:center;animation:fadeInUp .8s ease .3s both;perspective:1000px}
+.hero-3d-scene{position:relative;width:400px;height:400px;display:flex;align-items:center;justify-content:center;perspective:800px}
+.hero-avatar-wrapper{position:relative;width:280px;height:280px;transition:transform 0.4s ease;transform-style:preserve-3d}
+.hero-avatar-img{width:100%;height:100%;object-fit:cover;border-radius:50%;position:relative;z-index:2;border:3px solid var(--glass-border);box-shadow:0 0 40px rgba(124,108,240,0.2),0 0 80px rgba(124,108,240,0.1)}
 .avatar-ring{position:absolute;inset:-12px;border-radius:50%;border:2px solid transparent;border-top-color:var(--a1);border-right-color:var(--a2);animation:spin 8s linear infinite;z-index:1}
-.avatar-glow{position:absolute;inset:-20px;border-radius:50%;background:var(--g1);opacity:.15;filter:blur(30px);z-index:0}
-.floating-badge{position:absolute;padding:8px 14px;border-radius:10px;background:rgba(5,5,10,0.85);border:1px solid var(--glass-border);font-size:.75rem;font-weight:600;color:var(--text);z-index:3;backdrop-filter:blur(10px);display:flex;align-items:center;gap:6px;white-space:nowrap}
-.badge-flutter{top:20px;right:-20px;animation:badgeFloat 4s ease-in-out infinite}
-.badge-react{bottom:40px;left:-30px;animation:badgeFloat 4s ease-in-out infinite 1.3s}
-.badge-fire{top:50%;right:-40px;animation:badgeFloat 4s ease-in-out infinite 2.6s}
+.avatar-ring-2{inset:-24px;border-top-color:var(--a3);border-right-color:var(--a1);animation:spin 12s linear infinite reverse;border-left-color:transparent;border-bottom-color:transparent;opacity:0.5}
+.avatar-glow{position:absolute;inset:-30px;border-radius:50%;background:var(--g1);opacity:.15;filter:blur(30px);z-index:0;animation:pulseGlow 4s ease-in-out infinite}
+
+/* 3D ORBIT SYSTEM */
+.orbit-container{position:absolute;inset:0;animation:orbitSpin 15s linear infinite;transform-style:preserve-3d;pointer-events:none}
+.orbit-ring{position:absolute;inset:0;transform-style:preserve-3d}
+.orbit-icon{position:absolute;width:52px;height:52px;border-radius:12px;background:rgba(5,5,10,0.9);border:1px solid var(--glass-border);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.2rem;backdrop-filter:blur(10px);box-shadow:0 4px 20px rgba(0,0,0,0.4),0 0 15px rgba(124,108,240,0.15);animation:counterSpin 15s linear infinite;transition:transform 0.3s ease,box-shadow 0.3s ease;gap:2px}
+.orbit-icon:hover{box-shadow:0 4px 30px rgba(124,108,240,0.4);transform:scale(1.2)!important}
+.orbit-label{font-size:.5rem;font-weight:600;color:var(--text);font-family:'JetBrains Mono',monospace;white-space:nowrap;letter-spacing:0.5px;opacity:0.9;line-height:1}
+.orbit-1{top:-10px;left:50%;transform:translateX(-50%)}
+.orbit-2{top:18%;right:-10px}
+.orbit-3{bottom:18%;right:-10px}
+.orbit-4{bottom:-10px;left:50%;transform:translateX(-50%)}
+.orbit-5{bottom:18%;left:-10px}
+.orbit-6{top:18%;left:-10px}
+
+/* FLOATING 3D PARTICLES */
+.float-particle{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
+.fp-1{width:6px;height:6px;background:var(--a1);top:10%;left:15%;animation:floatP 6s ease-in-out infinite;box-shadow:0 0 10px var(--a1)}
+.fp-2{width:4px;height:4px;background:var(--a2);top:70%;right:10%;animation:floatP 8s ease-in-out infinite 1s;box-shadow:0 0 8px var(--a2)}
+.fp-3{width:8px;height:8px;background:var(--a3);bottom:15%;left:20%;animation:floatP 7s ease-in-out infinite 2s;box-shadow:0 0 12px var(--a3);opacity:.6}
+.fp-4{width:3px;height:3px;background:var(--a1);top:30%;right:5%;animation:floatP 5s ease-in-out infinite 0.5s;box-shadow:0 0 6px var(--a1)}
+.fp-5{width:5px;height:5px;background:var(--a2);top:50%;left:5%;animation:floatP 9s ease-in-out infinite 3s;box-shadow:0 0 10px var(--a2);opacity:.7}
+
+/* 3D CARD EFFECTS */
+.project-card-v2,.skill-card,.cert-card,.exp-card,.highlight-item,.contact-link{transform-style:preserve-3d;transition:transform 0.4s ease,box-shadow 0.4s ease,border-color 0.3s ease}
+.project-card-v2{overflow:visible}
+.project-card-v2::after{content:'';position:absolute;inset:-1px;border-radius:var(--r);background:linear-gradient(135deg,rgba(124,108,240,0.15),rgba(0,224,208,0.15));opacity:0;transition:opacity 0.4s ease;z-index:-1;filter:blur(12px)}
+.project-card-v2:hover::after{opacity:1}
+.project-card-v2:hover{transform:translateY(-8px) perspective(1000px) rotateX(2deg);box-shadow:0 25px 60px rgba(124,108,240,0.15),0 0 40px rgba(124,108,240,0.05)}
+.skill-card:hover{transform:translateY(-6px) perspective(800px) rotateX(2deg) rotateY(-1deg);box-shadow:0 20px 50px rgba(124,108,240,0.12)}
+.cert-card:hover{transform:translateY(-4px) perspective(600px) rotateX(2deg);box-shadow:0 15px 40px rgba(124,108,240,0.1)}
+
+/* 3D SECTION PARALLAX */
+section{transform-style:preserve-3d}
+.section-header{transform:translateZ(20px)}
+.section-title{transition:transform 0.6s ease}
+
+/* ENHANCED PROJECT ICON 3D */
+.project-app-icon{transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.4s ease}
+.project-card-v2:hover .project-app-icon{transform:scale(1.15) translateY(-8px) rotateY(10deg);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+
+/* GLOWING LINE ON SECTIONS */
+.section-label::after{content:'';display:inline-block;width:40px;height:1px;background:var(--g1);margin-left:10px;animation:lineGlow 2s ease-in-out infinite alternate}
+
+/* ENHANCED STAT ITEMS */
+.stat-item{transition:transform 0.3s ease;cursor:default}
+.stat-item:hover{transform:translateY(-4px) scale(1.05)}
+.stat-item:hover .stat-number{filter:drop-shadow(0 0 8px rgba(124,108,240,0.5))}
+
+/* 3D TIMELINE */
+.exp-dot{transition:transform 0.3s ease,box-shadow 0.3s ease}
+.exp-item:hover .exp-dot{transform:scale(1.3);box-shadow:0 0 20px rgba(124,108,240,0.4)}
+.exp-card{transition:transform 0.4s ease,box-shadow 0.4s ease,border-color 0.3s ease}
+.exp-item:hover .exp-card{transform:translateX(8px) perspective(600px) rotateY(-1deg);box-shadow:0 10px 40px rgba(124,108,240,0.1)}
+
+/* 3D CONTACT LINKS */
+.contact-link:hover{transform:translateX(8px) perspective(500px) rotateY(-2deg);box-shadow:0 8px 30px rgba(124,108,240,0.1)}
+
+/* CTA SECTION 3D */
+.hire-section .btn-lg{transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.4s ease}
+.hire-section .btn-lg:hover{transform:translateY(-4px) scale(1.05)}
+
+/* NAVBAR GLASS 3D */
+.navbar{transition:all 0.4s cubic-bezier(0.4,0,0.2,1)}
+.navbar.scrolled{background:rgba(5,5,10,0.85);box-shadow:0 4px 30px rgba(0,0,0,0.4),0 1px 0 rgba(124,108,240,0.1)}
+
+/* SCROLL PROGRESS INDICATOR */
+.scroll-indicator .mouse{animation:mouseFloat 2s ease-in-out infinite}
+
+/* ===== 3D KEYFRAMES ===== */
+@keyframes orbitSpin{0%{transform:rotateZ(0deg)}100%{transform:rotateZ(360deg)}}
+@keyframes counterSpin{0%{transform:rotateZ(0deg)}100%{transform:rotateZ(-360deg)}}
+@keyframes pulseGlow{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:.25;transform:scale(1.05)}}
+@keyframes floatP{0%,100%{transform:translate(0,0) scale(1);opacity:.6}25%{transform:translate(10px,-15px) scale(1.2);opacity:1}50%{transform:translate(-5px,-25px) scale(0.8);opacity:.4}75%{transform:translate(15px,-10px) scale(1.1);opacity:.8}}
+@keyframes lineGlow{0%{width:40px;opacity:.5}100%{width:60px;opacity:1}}
+@keyframes mouseFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes float{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-30px)}66%{transform:translate(-20px,20px)}}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes badgeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes scrollWheel{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(12px)}}
+
+/* RESPONSIVE */
+@media(max-width:1024px){.hero-content{grid-template-columns:1fr;text-align:center}.hero-right{display:none}.hero-3d-scene{display:none}.hero-buttons{justify-content:center}.hero-stats{justify-content:center}.skill-card-lg{grid-column:span 1}.projects-showcase{grid-template-columns:1fr}}
+@media(max-width:768px){.nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(5,5,10,0.98);flex-direction:column;align-items:center;justify-content:center;gap:32px;z-index:999}.nav-links.open{display:flex}.nav-cta{display:none}.hamburger{display:flex}.about-grid{grid-template-columns:1fr;text-align:center}.about-highlights{grid-template-columns:1fr}.about-image-card{max-width:240px;margin:0 auto}.contact-wrapper{grid-template-columns:1fr}section{padding:60px 16px}.hero h1{font-size:clamp(1.8rem,7vw,3rem)}.projects-showcase{grid-template-columns:1fr}.exp-header{flex-direction:column}}
+@media(max-width:480px){.hero-stats{flex-wrap:wrap;gap:16px}.stat-item .stat-number{font-size:1.5rem}.hero-buttons .btn{width:100%;justify-content:center}.footer-content{flex-direction:column;gap:16px;text-align:center}}
+
 .scroll-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text2);font-size:.72rem;animation:fadeInUp 1s ease 1s both}
 .mouse{width:22px;height:34px;border:2px solid var(--text2);border-radius:12px;position:relative}
 .wheel{width:3px;height:8px;background:var(--a1);border-radius:3px;position:absolute;top:6px;left:50%;transform:translateX(-50%);animation:scrollWheel 2s ease infinite}
