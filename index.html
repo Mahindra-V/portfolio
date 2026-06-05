@@ -14,9 +14,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <canvas id="particles-canvas"></canvas>
+  <!-- PREMIUM 3D BACKGROUND SYSTEM -->
+  <div class="premium-bg-container">
+    <div class="premium-bg-grid"></div>
+    <div class="premium-orb orb-1"></div>
+    <div class="premium-orb orb-2"></div>
+    <div class="premium-orb orb-3"></div>
+    <canvas id="particles-canvas"></canvas>
+    <div class="noise-overlay"></div>
+  </div>
   <div class="cursor-glow"></div>
-  <div class="noise-overlay"></div>
 
   <!-- NAVBAR -->
   <nav class="navbar" id="navbar">
@@ -41,11 +48,7 @@
   </nav>
 
   <!-- HERO -->
-  <section class="hero" id="home">
-    <div class="hero-bg-grid"></div>
-    <div class="hero-orb hero-orb-1"></div>
-    <div class="hero-orb hero-orb-2"></div>
-    <div class="hero-orb hero-orb-3"></div>
+  <section id="home" class="hero">
     <div class="container hero-content">
       <div class="hero-left">
         <div class="hero-badge"><span class="dot"></span> Available for Freelance & Full-time</div>
@@ -113,10 +116,6 @@
           <div class="float-particle fp-5"></div>
         </div>
       </div>
-    </div>
-    <div class="scroll-indicator">
-      <div class="mouse"><div class="wheel"></div></div>
-      <span>Scroll Down</span>
     </div>
   </section>
 

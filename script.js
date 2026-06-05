@@ -1,45 +1,104 @@
-// === PARTICLE SYSTEM ===
+// === PREMIUM CONSTELLATION PARTICLE SYSTEM ===
 const canvas = document.getElementById('particles-canvas');
 if (canvas) {
   const ctx = canvas.getContext('2d');
   let particles = [];
+  let mouse = { x: -1000, y: -1000 };
+  
   function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
+  
+  document.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  document.addEventListener('mouseleave', () => { mouse.x = -1000; mouse.y = -1000; });
+  
   class Particle {
     constructor() { this.reset(); }
     reset() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.size = Math.random() * 1.5 + 0.5;
-      this.speedX = (Math.random() - 0.5) * 0.3;
-      this.speedY = (Math.random() - 0.5) * 0.3;
-      this.opacity = Math.random() * 0.4 + 0.1;
+      this.x = (Math.random() - 0.5) * canvas.width * 2;
+      this.y = (Math.random() - 0.5) * canvas.height * 2;
+      this.z = Math.random() * 1500 + 100; // 3D Depth
+      this.baseZ = this.z;
+      this.speedZ = (Math.random() - 0.5) * 2;
+      this.size = Math.random() * 2 + 0.5;
     }
     update() {
-      this.x += this.speedX; this.y += this.speedY;
-      if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+      // Move in Z space
+      this.z += this.speedZ;
+      if (this.z < 100) this.z = 1600;
+      if (this.z > 1600) this.z = 100;
+      
+      // Calculate 3D to 2D perspective projection
+      const fov = 800;
+      const scale = fov / this.z;
+      
+      // Interactive camera tilt based on mouse
+      let cameraX = 0;
+      let cameraY = 0;
+      if (mouse.x !== -1000) {
+        cameraX = (mouse.x - canvas.width / 2) * 0.5;
+        cameraY = (mouse.y - canvas.height / 2) * 0.5;
+      }
+      
+      // Scroll Parallax mapped to Y with infinite wrap
+      const scrollY = window.scrollY;
+      let viewY = this.y - scrollY * 0.3;
+      
+      // Wrap viewY so particles never run out
+      const wrapHeight = canvas.height * 4;
+      viewY = ((viewY % wrapHeight) + wrapHeight) % wrapHeight - wrapHeight / 2;
+      
+      this.screenX = (this.x - cameraX) * scale + canvas.width / 2;
+      this.screenY = (viewY - cameraY) * scale + canvas.height / 2;
+      this.screenSize = this.size * scale;
+      this.opacity = Math.max(0, 1 - (this.z / 1600));
     }
     draw() {
-      ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(124,108,240,${this.opacity})`; ctx.fill();
+      if (this.screenX > -100 && this.screenX < canvas.width + 100 && this.screenY > -100 && this.screenY < canvas.height + 100) {
+        ctx.beginPath(); 
+        ctx.arc(this.screenX, this.screenY, this.screenSize, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 224, 208, ${this.opacity})`; 
+        ctx.fill();
+      }
     }
   }
-  for (let i = 0; i < 80; i++) particles.push(new Particle());
+  
+  for (let i = 0; i < 150; i++) particles.push(new Particle());
+  
   function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Add glowing effect
+    ctx.globalCompositeOperation = 'screen';
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = '#00e0d0';
+
     particles.forEach(p => { p.update(); p.draw(); });
-    // Draw connections
+    
+    // Draw 3D network connections
+    ctx.shadowBlur = 0; // Turn off shadow for lines to save performance
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 120) {
-          ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(124,108,240,${0.06 * (1 - dist / 120)})`;
-          ctx.lineWidth = 0.5; ctx.stroke();
+        const p1 = particles[i];
+        const p2 = particles[j];
+        
+        // Only connect if close in Z-space AND screen space
+        if (Math.abs(p1.z - p2.z) < 300) {
+          const dx = p1.screenX - p2.screenX;
+          const dy = p1.screenY - p2.screenY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist < 120 * (800 / Math.min(p1.z, p2.z))) { // Dynamic distance based on depth
+            const opacity = (1 - dist / (120 * (800 / Math.min(p1.z, p2.z)))) * Math.min(p1.opacity, p2.opacity) * 0.5;
+            if (opacity > 0) {
+              ctx.beginPath(); 
+              ctx.moveTo(p1.screenX, p1.screenY);
+              ctx.lineTo(p2.screenX, p2.screenY);
+              ctx.strokeStyle = `rgba(124, 108, 240, ${opacity})`;
+              ctx.lineWidth = 1 * (800 / p1.z); // Line thickness scales with depth
+              ctx.stroke();
+            }
+          }
         }
       }
     }
@@ -220,21 +279,16 @@ if (hero3dScene) {
   });
 }
 
-// === PARALLAX SCROLL EFFECT ===
+// === GLOBAL PARALLAX SCROLL EFFECT ===
 window.addEventListener('scroll', () => {
   const scrolled = window.scrollY;
-  // Hero parallax layers
-  const heroOrbs = document.querySelectorAll('.hero-orb');
-  heroOrbs.forEach((orb, i) => {
-    const speed = 0.1 + i * 0.05;
-    orb.style.transform = `translate(0, ${scrolled * speed}px)`;
-  });
+  
   // Sections subtle parallax
   document.querySelectorAll('.section-header').forEach(header => {
     const rect = header.getBoundingClientRect();
     if (rect.top < window.innerHeight && rect.bottom > 0) {
       const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-      header.style.transform = `translateY(${(progress - 0.5) * -15}px)`;
+      header.style.transform = `translateY(${(progress - 0.5) * -20}px)`;
     }
   });
 });
