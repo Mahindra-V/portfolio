@@ -63,7 +63,8 @@ if (canvas) {
     }
   }
   
-  for (let i = 0; i < 150; i++) particles.push(new Particle());
+  const particleCount = window.innerWidth < 768 ? 60 : 150;
+  for (let i = 0; i < particleCount; i++) particles.push(new Particle());
   
   function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
