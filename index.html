@@ -12,17 +12,12 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
-  <!-- PREMIUM 3D BACKGROUND SYSTEM -->
-  <div class="premium-bg-container">
-    <div class="premium-bg-grid"></div>
-    <div class="premium-orb orb-1"></div>
-    <div class="premium-orb orb-2"></div>
-    <div class="premium-orb orb-3"></div>
-    <canvas id="particles-canvas"></canvas>
-    <div class="noise-overlay"></div>
-  </div>
+  <!-- THREE.JS ULTRA 3D BACKGROUND -->
+  <div id="three-bg"></div>
+  <div class="noise-overlay-global"></div>
   <div class="cursor-glow"></div>
 
   <!-- NAVBAR -->
@@ -557,5 +552,6 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="three-bg.js"></script>
 </body>
 </html>
