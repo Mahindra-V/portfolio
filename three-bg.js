@@ -7,14 +7,18 @@
   const container = document.getElementById('three-bg');
   if (!container || typeof THREE === 'undefined') return;
 
+  // ── MOBILE DETECTION ───────────────────────────────────────
+  const isMobile = window.innerWidth <= 768;
+  const isTablet = window.innerWidth <= 1024;
+
   // ── SCENE SETUP ────────────────────────────────────────────
   const scene    = new THREE.Scene();
   const camera   = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-  camera.position.set(0, 0, 60);
+  camera.position.set(0, 0, isMobile ? 75 : 60);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1 : 2));
   renderer.setClearColor(0x00000, 0);
   container.appendChild(renderer.domElement);
 
@@ -39,7 +43,7 @@
   // 1. GALAXY STAR-FIELD  (8 000 particles in spiral arms)
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function createGalaxy() {
-    const N        = 8000;
+    const N        = isMobile ? 2000 : 8000;
     const arms     = 3;
     const spread   = 0.45;
     const radius   = 120;
@@ -402,14 +406,14 @@
   }
 
   // ── BUILD SCENE ────────────────────────────────────────────
-  const galaxy   = createGalaxy();
-  createNebulaClouds();
-  const torusKnot  = createHolographicGlobe();
-  const neural     = createNeuralNetwork();
-  const orbs     = createEnergyOrbs();
-  const wires    = createWireNetwork();
-  const grid     = createNeonGrid();
-  const shards   = createFloatingShards();
+  const galaxy     = createGalaxy();
+  if (!isMobile) createNebulaClouds();
+  const torusKnot  = !isMobile ? createHolographicGlobe() : null;
+  const neural     = !isMobile ? createNeuralNetwork()     : { group: null, nodeMeshes: [], edges: [] };
+  const orbs       = createEnergyOrbs();
+  const wires      = !isTablet ? createWireNetwork()       : null;
+  const grid       = createNeonGrid();
+  const shards     = createFloatingShards();
 
   // ── CLOCK ──────────────────────────────────────────────────
   const clock = new THREE.Clock();
@@ -429,40 +433,41 @@
     // Galaxy slow rotation
     galaxy.rotation.y = t * 0.04;
 
-    // Holographic Globe rotation
-    torusKnot.rotation.y = t * 0.12;
-    torusKnot.children.forEach((child, i) => {
-      if (i === 0) return; // skip base sphere
-      // Very subtle breathing scale
-    });
-    const globePulse = 1 + Math.sin(t * 0.8) * 0.02;
-    torusKnot.scale.setScalar(globePulse);
+    // Holographic Globe rotation (desktop only)
+    if (torusKnot) {
+      torusKnot.rotation.y = t * 0.12;
+      const globePulse = 1 + Math.sin(t * 0.8) * 0.02;
+      torusKnot.scale.setScalar(globePulse);
+    }
 
-    // Neural network pulse
-    neural.nodeMeshes.forEach((node, i) => {
+    // Neural network pulse (desktop only)
+    neural.nodeMeshes.forEach((node) => {
       const pulse = 0.7 + Math.sin(t * 1.8 + node.userData.phase) * 0.3;
       node.scale.setScalar(pulse);
     });
     neural.edges.forEach(e => {
       e.mat.opacity = 0.05 + Math.abs(Math.sin(t * 1.2 + e.phase)) * 0.25;
     });
-    // Slowly rotate the whole neural network
-    neural.group.rotation.y = t * 0.08;
-    neural.group.rotation.x = Math.sin(t * 0.05) * 0.15;
+    if (neural.group) {
+      neural.group.rotation.y = t * 0.08;
+      neural.group.rotation.x = Math.sin(t * 0.05) * 0.15;
+    }
 
     // Energy orbs floating
-    orbs.forEach((o, i) => {
+    orbs.forEach((o) => {
       o.mesh.position.y = o.oy + Math.sin(t * o.spd * 60 + o.phase) * 5;
       o.mesh.rotation.y = t * 0.5;
       const pulse = 0.8 + Math.sin(t * 2 + o.phase) * 0.2;
       o.mesh.scale.setScalar(pulse);
     });
 
-    // Wireframe shapes
-    wires.children.forEach((m, i) => {
-      m.rotation.x = t * m.userData.spd;
-      m.rotation.z = t * m.userData.spd * 0.7;
-    });
+    // Wireframe shapes (desktop/tablet only)
+    if (wires) {
+      wires.children.forEach((m) => {
+        m.rotation.x = t * m.userData.spd;
+        m.rotation.z = t * m.userData.spd * 0.7;
+      });
+    }
 
     // Grid gentle wave
     grid.position.z = (t * 3) % (200 / 30);
@@ -473,6 +478,7 @@
       s.rotation.y += s.userData.spd * 0.7;
       s.position.y += Math.sin(t * s.userData.spd * 20 + s.userData.phase) * 0.01;
     });
+
 
     renderer.render(scene, camera);
   }

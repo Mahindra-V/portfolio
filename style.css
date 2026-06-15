@@ -149,9 +149,104 @@ section{transform-style:preserve-3d}
 @keyframes scrollWheel{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(12px)}}
 
 /* RESPONSIVE */
-@media(max-width:1024px){.hero-content{grid-template-columns:1fr;text-align:center}.hero-right{display:none}.hero-3d-scene{display:none}.hero-buttons{justify-content:center}.hero-stats{justify-content:center}.skill-card-lg{grid-column:span 1}.projects-showcase{grid-template-columns:1fr}}
-@media(max-width:768px){.nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(5,5,10,0.98);flex-direction:column;align-items:center;justify-content:center;gap:32px;z-index:999}.nav-links.open{display:flex}.nav-cta{display:none}.hamburger{display:flex}.about-grid{grid-template-columns:1fr;text-align:center}.about-highlights{grid-template-columns:1fr}.about-image-card{max-width:240px;margin:0 auto}.contact-wrapper{grid-template-columns:1fr}section{padding:60px 16px}.hero h1{font-size:clamp(1.8rem,7vw,3rem)}.projects-showcase{grid-template-columns:1fr}.exp-header{flex-direction:column}}
-@media(max-width:480px){.hero-stats{flex-wrap:wrap;gap:16px}.stat-item .stat-number{font-size:1.5rem}.hero-buttons .btn{width:100%;justify-content:center}.footer-content{flex-direction:column;gap:16px;text-align:center}}
+/* ── Tablet (≤1024px) ── */
+@media(max-width:1024px){
+  .hero-content{grid-template-columns:1fr;text-align:center}
+  .hero-right{display:none}
+  .hero-3d-scene{display:none}
+  .hero-buttons{justify-content:center}
+  .hero-stats{justify-content:center}
+  .skill-card-lg{grid-column:span 1}
+  .projects-showcase{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .about-grid{grid-template-columns:1fr;text-align:center}
+  .about-highlights{grid-template-columns:1fr 1fr}
+  .about-image-card{max-width:260px;margin:0 auto 32px}
+  .contact-wrapper{grid-template-columns:1fr;gap:32px}
+}
+
+/* ── Mobile (≤768px) ── */
+@media(max-width:768px){
+  /* Navbar */
+  .nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(5,5,10,0.98);flex-direction:column;align-items:center;justify-content:center;gap:32px;z-index:999}
+  .nav-links.open{display:flex}
+  .nav-cta{display:none}
+  .hamburger{display:flex}
+
+  /* Sections */
+  section{padding:60px 16px}
+
+  /* Hero */
+  .hero{padding-top:70px;padding-bottom:40px;min-height:auto}
+  .hero-content{gap:24px}
+  .hero h1{font-size:clamp(1.8rem,8vw,2.8rem)}
+  .hero-description{font-size:.9rem;margin-bottom:24px}
+  .hero-badge{font-size:.75rem;padding:6px 14px}
+  .hero-buttons{flex-direction:column;align-items:center;gap:10px}
+  .hero-buttons .btn{width:100%;justify-content:center;max-width:300px}
+  .hero-stats{flex-wrap:wrap;gap:20px;margin-top:32px;justify-content:center}
+  .stat-item .stat-number{font-size:1.6rem}
+  .stat-item .stat-label{font-size:.72rem}
+
+  /* About */
+  .about-grid{grid-template-columns:1fr;text-align:center;gap:32px}
+  .about-highlights{grid-template-columns:1fr;gap:10px}
+  .about-image-card{max-width:200px;margin:0 auto 24px}
+  .about-code-snippet{font-size:.68rem}
+
+  /* Skills */
+  .skills-masonry{grid-template-columns:1fr;gap:16px}
+  .skill-card{padding:20px}
+
+  /* Projects */
+  .projects-showcase{grid-template-columns:1fr;gap:16px}
+
+  /* Experience */
+  .exp-header{flex-direction:column;gap:8px}
+  .exp-timeline{padding-left:24px}
+  .exp-connector{left:-16px}
+  .exp-dot{left:-26px}
+  .exp-card{padding:20px}
+
+  /* Certs */
+  .certs-grid{grid-template-columns:1fr;gap:12px}
+  .cert-card{padding:16px;gap:12px}
+
+  /* Contact */
+  .contact-wrapper{grid-template-columns:1fr;gap:28px}
+  .contact-link{padding:14px 16px}
+
+  /* Footer */
+  .footer-content{flex-direction:column;gap:16px;text-align:center}
+  .footer-links{justify-content:center}
+
+  /* Section titles */
+  .section-title{font-size:clamp(1.6rem,6vw,2.2rem)}
+  .section-subtitle{font-size:.9rem}
+
+  /* Scroll indicator */
+  .scroll-indicator{display:none}
+}
+
+/* ── Small Mobile (≤480px) ── */
+@media(max-width:480px){
+  section{padding:50px 12px}
+  .hero h1{font-size:clamp(1.6rem,8vw,2.2rem)}
+  .hero-stats{gap:14px}
+  .stat-item .stat-number{font-size:1.4rem}
+  .hero-badge{font-size:.7rem}
+  .section-title{font-size:clamp(1.4rem,7vw,2rem)}
+  .about-highlights{grid-template-columns:1fr}
+  .skills-masonry{grid-template-columns:1fr}
+  .projects-showcase{grid-template-columns:1fr}
+  .certs-grid{grid-template-columns:1fr}
+  .cert-card{flex-direction:row;align-items:center}
+  .footer-content{flex-direction:column;gap:16px;text-align:center}
+  .nav-container{padding:0 16px}
+  .highlight-item strong{font-size:.8rem}
+  .highlight-item small{font-size:.68rem}
+  .btn{padding:11px 20px;font-size:.82rem}
+}
+
 
 .scroll-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text2);font-size:.72rem;animation:fadeInUp 1s ease 1s both}
 .mouse{width:22px;height:34px;border:2px solid var(--text2);border-radius:12px;position:relative}
