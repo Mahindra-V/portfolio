@@ -22,13 +22,30 @@
   renderer.setClearColor(0x00000, 0);
   container.appendChild(renderer.domElement);
 
-  // ── MOUSE TRACKING ─────────────────────────────────────────
+  // ── MOUSE & SCROLL TRACKING ────────────────────────────────
   const mouse   = { x: 0, y: 0 };
   const target  = { x: 0, y: 0 };
+  let   scrollY = 0;
+
+  // Mouse parallax (desktop)
   document.addEventListener('mousemove', (e) => {
     mouse.x = (e.clientX / window.innerWidth  - 0.5) * 2;
     mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
   });
+
+  // Scroll parallax (mobile + desktop)
+  window.addEventListener('scroll', () => {
+    scrollY = window.scrollY;
+  }, { passive: true });
+
+  // Touch move tilt (mobile)
+  if (isMobile) {
+    document.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      mouse.x = (t.clientX / window.innerWidth  - 0.5) * 1.5;
+      mouse.y = (t.clientY / window.innerHeight - 0.5) * 1.5;
+    }, { passive: true });
+  }
 
   // ── COLOUR PALETTE ─────────────────────────────────────────
   const C = {
@@ -424,14 +441,18 @@
     const t = clock.getElapsedTime();
 
     // Smooth camera drift towards mouse
-    target.x += (mouse.x * 8  - target.x) * 0.04;
-    target.y += (-mouse.y * 5 - target.y) * 0.04;
+    target.x += (mouse.x * (isMobile ? 5 : 8) - target.x) * 0.04;
+    target.y += (-mouse.y * (isMobile ? 3 : 5) - target.y) * 0.04;
     camera.position.x = target.x;
-    camera.position.y = target.y;
+
+    // Scroll parallax — camera drifts up as user scrolls down
+    const scrollOffset = scrollY * 0.008;
+    camera.position.y = target.y - scrollOffset;
     camera.lookAt(scene.position);
 
-    // Galaxy slow rotation
+    // Galaxy slow rotation + scroll tilt
     galaxy.rotation.y = t * 0.04;
+    galaxy.rotation.x = Math.PI * 0.15 + scrollY * 0.0003;
 
     // Holographic Globe rotation (desktop only)
     if (torusKnot) {
