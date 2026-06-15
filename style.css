@@ -169,56 +169,63 @@ section{transform-style:preserve-3d}
 /* ── Mobile (≤768px) ── */
 @media(max-width:768px){
   /* Navbar */
-  .nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(5,5,10,0.98);flex-direction:column;align-items:center;justify-content:center;gap:36px;z-index:999;font-size:1.1rem}
+  .nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(5,5,10,0.85);backdrop-filter:blur(24px);flex-direction:column;align-items:center;justify-content:center;gap:36px;z-index:999;font-size:1.1rem}
   .nav-links.open{display:flex}
   .nav-cta{display:none}
   .hamburger{display:flex}
   .nav-container{padding:0 20px}
 
-  /* Sections — match desktop padding feel */
-  section{padding:70px 20px}
+  /* Sections — more breathing room */
+  section{padding:80px 20px}
 
-  /* Hero — clean centered like desktop but stacked */
-  .hero{min-height:100svh;padding-top:72px;display:flex;align-items:center}
-  .hero-content{grid-template-columns:1fr;gap:0;text-align:left}
-  .hero-badge{font-size:.78rem;padding:7px 16px}
-  .hero h1{font-size:clamp(2rem,8vw,3rem);line-height:1.1}
-  .hero-description{font-size:.95rem;margin-bottom:28px}
-  .hero-buttons{flex-direction:row;flex-wrap:wrap;gap:12px;justify-content:flex-start}
-  .hero-buttons .btn{flex:1;min-width:140px;justify-content:center}
-  .hero-stats{flex-wrap:wrap;gap:24px;margin-top:40px;justify-content:flex-start}
+  /* Hero — perfectly centered for comfortable reading */
+  .hero{min-height:100svh;padding-top:80px;display:flex;align-items:center;text-align:center}
+  .hero-content{grid-template-columns:1fr;gap:0;text-align:center}
+  .hero-badge{font-size:.78rem;padding:7px 16px;margin:0 auto}
+  .hero h1{font-size:clamp(2.2rem,8vw,3.2rem);line-height:1.1}
+  .hero-description{font-size:.98rem;margin-bottom:32px;color:var(--text2);max-width:90%;margin-left:auto;margin-right:auto}
+  .hero-buttons{flex-direction:row;flex-wrap:wrap;gap:16px;justify-content:center}
+  .hero-buttons .btn{flex:1;min-width:140px;justify-content:center;padding:14px 24px}
+  .hero-stats{flex-wrap:wrap;gap:24px;margin-top:48px;justify-content:center}
   .stat-item .stat-number{font-size:1.8rem}
   .stat-item .stat-label{font-size:.75rem}
 
   /* About */
-  .about-grid{grid-template-columns:1fr;text-align:left;gap:36px}
+  .about-grid{grid-template-columns:1fr;text-align:center;gap:40px}
   .about-highlights{grid-template-columns:1fr 1fr;gap:12px}
-  .about-image-card{max-width:220px;margin:0 auto 28px}
+  .about-image-card{max-width:240px;margin:0 auto}
+  .about-text p{font-size:0.95rem;max-width:95%;margin-left:auto;margin-right:auto}
 
-  /* Skills — 2 column on mobile like desktop */
-  .skills-masonry{grid-template-columns:repeat(2,1fr);gap:16px}
-  .skill-card{padding:20px}
-  .skill-card-lg{grid-column:span 2}
+  /* Skills — comfortable spacing */
+  .skills-masonry{grid-template-columns:1fr;gap:20px}
+  .skill-card{padding:24px}
+  .skill-card-lg{grid-column:span 1}
 
-  /* Projects — 1 column on mobile (cards too small for 2) */
-  .projects-showcase{grid-template-columns:1fr;gap:20px}
+  /* Projects — readable single column */
+  .projects-showcase{grid-template-columns:1fr;gap:24px}
+  .project-visual{height:220px}
 
   /* Experience */
-  .exp-header{flex-direction:row;flex-wrap:wrap;gap:8px}
-  .exp-timeline{padding-left:40px}
-  .exp-card{padding:22px}
+  .exp-header{flex-direction:column;gap:8px;align-items:flex-start}
+  .exp-timeline{padding-left:32px}
+  .exp-card{padding:24px}
+  .exp-connector{left:-20px}
+  .exp-dot{left:-30px}
 
-  /* Certs — 1 col */
-  .certs-grid{grid-template-columns:1fr;gap:14px}
-  .cert-card{padding:18px;gap:14px}
+  /* Certs — comfortable reading */
+  .certs-grid{grid-template-columns:1fr;gap:16px}
+  .cert-card{padding:20px;gap:16px}
 
   /* Contact */
-  .contact-wrapper{grid-template-columns:1fr;gap:32px}
+  .contact-wrapper{grid-template-columns:1fr;gap:40px;text-align:center}
+  .contact-links{align-items:stretch}
+  .contact-info h3{text-align:center}
+  .contact-info > p{text-align:center;max-width:90%;margin-left:auto;margin-right:auto}
 
-  /* Section titles — match desktop scale */
-  .section-title{font-size:clamp(1.8rem,6vw,2.5rem)}
+  /* Section titles */
+  .section-title{font-size:clamp(1.8rem,7vw,2.5rem);text-align:center}
   .section-label{font-size:.8rem}
-  .section-subtitle{font-size:.95rem}
+  .section-subtitle{font-size:.95rem;text-align:center}
 
   /* Footer */
   .footer-content{flex-direction:column;gap:20px;text-align:center}
